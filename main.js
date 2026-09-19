@@ -1,9 +1,16 @@
 const express=require("express")
 const app=express()
-require("dotenv").config
+require("dotenv").config()
+const cors=require("cors")
 
-console.log(process.env.DATABASE_URL)
 
+
+
+app.use(express.urlencoded({extended:true}))
+app.use(express.json())
+
+const signinRouter=require("./routes/signinRoute")
+app.use("/signin",signinRouter)
 
 const port=process.env.PORT||3000
 
