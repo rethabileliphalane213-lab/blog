@@ -1,19 +1,20 @@
-const express=require("express")
+import express from "express"
 const app=express()
-require("dotenv").config()
-const cors=require("cors")
-
-
-
-
-app.use(express.urlencoded({extended:true}))
 app.use(express.json())
+import cors from "./routes/cors.js"
+app.use(cors)
 
-const signinRouter=require("./routes/signinRoute")
+import signinRouter from "./routes/signinRouter.js"
+
+app.get("/",(req,res)=>{
+    res.send("Hello world")
+})
+
 app.use("/signin",signinRouter)
 
-const port=process.env.PORT||3000
+const port= process.env.PORT||4000
 
 app.listen(port,()=>{
-    console.log("port is running")
+    console.log("port is running...")
 })
+
