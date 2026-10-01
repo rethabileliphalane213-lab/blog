@@ -20,6 +20,7 @@ datasource db {
    name       String    @db.VarChar(255)
    surname       String    @db.VarChar(255)
   email      String    @db.VarChar(255)
+  password  String @db.VarChar(255)
     
   
  }
