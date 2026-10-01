@@ -4,7 +4,7 @@ app.use(express.json())
 import cors from "./routes/cors.js"
 app.use(cors)
 
-import signinRouter from "./routes/signinRouter.js"
+import signinRouter from "./routes/signinRoute.js"
 
 app.get("/",(req,res)=>{
     res.send("Hello world")
