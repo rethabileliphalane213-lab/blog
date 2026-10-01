@@ -8,21 +8,38 @@ import prisma from "./db.js"
 
 
 
-signinRouter.post("/users",async(req,res)=>{
-   
-    const {name,surname,email,password}=req.body
-    const hashPashword=await bcrypt.hash(password,10)
-    const user=await prisma.user.create({data:{
-        name:name,
-        surname:surname,
-        email:email,
-        password:hashPashword
-    }})
-console.log(user)
-    res.json({
-        message:"user recieved",
-        user:req.body
-    })
-})
+signinRouter.post("/users", async (req, res) => {
+    try {
+        const {name, surname, email, password} = req.body;
 
+        const hashPassword = await bcrypt.hash(password, 10);
+
+        const user = await prisma.user.create({
+            data:{
+                name,
+                surname,
+                email,
+                password: hashPassword
+            }
+        });
+
+        console.log(user);
+
+        res.json({
+            message:"user received",
+            user:{
+                id:user.id,
+                name:user.name,
+                surname:user.surname,
+                email:user.email
+            }
+        });
+
+    }catch(error) {
+    console.log(error);
+    res.status(500).json({
+        error: error.message
+    });
+}
+});
 export default signinRouter

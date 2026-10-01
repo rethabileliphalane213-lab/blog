@@ -1,5 +1,7 @@
 import express from "express"
 const app=express()
+
+import "dotenv/config";
 app.use(express.json())
 import cors from "./routes/cors.js"
 app.use(cors)
