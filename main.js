@@ -37,7 +37,18 @@ return document(null,userFound)
 passport.serializeUser((user,done)=>{
     return done(null, user.id)
 })
-
+passport.deserializeUser(async(id,done)=>{
+try{
+const userFound=await prismsa.user.findFirst({
+    where:{
+        id:id
+    }
+})
+done(null,userFound)
+}catch(e){
+    done(e)
+}
+})
 app.get("/",(req,res)=>{
     res.send("Hello world")
 })
