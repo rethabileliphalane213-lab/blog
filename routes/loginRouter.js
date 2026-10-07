@@ -3,6 +3,10 @@ import passport from "passport";
 import prisma from "./db.js"
 import bcryptjs from  "bcryptjs"
 import jsonwebtoken from "jsonwebtoken"
+
+import verifyToken from "./verifyToken"
+
+
 const loginRouter = Router();
 
 loginRouter.post("/users", async(req, res, next) => {
@@ -35,3 +39,4 @@ res.send({
 });
 
 export default loginRouter;
+
