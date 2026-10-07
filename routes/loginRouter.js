@@ -4,7 +4,7 @@ import prisma from "./db.js"
 import bcryptjs from  "bcryptjs"
 import jsonwebtoken from "jsonwebtoken"
 
-import verifyToken from "./verifyToken"
+import verifyToken from "./verifyToken.js"
 
 
 const loginRouter = Router();
