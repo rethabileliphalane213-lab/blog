@@ -1,41 +1,36 @@
 import { Router } from "express";
 import passport from "passport";
-
+import prisma from "./db.js"
+import bcryptjs from  "bcryptjs"
+import jsonwebtoken from "jsonwebtoken"
 const loginRouter = Router();
 
-loginRouter.post("/users", (req, res, next) => {
+loginRouter.post("/users", async(req, res, next) => {
+const [email,password]=req.body
 
-    console.log("LOGIN ROUTE REACHED");
-    console.log("BODY:", req.body);
-
-    passport.authenticate("local", (error, user, info) => {
-
-        console.log("PASSPORT CALLBACK");
-        console.log("ERROR:", error);
-        console.log("USER:", user);
-        console.log("INFO:", info);
-
-        if (error) {
-            return next(error);
-        }
-
-        if (!user) {
-            return res.status(401).json({
-                error: info?.error || "Login failed"
-            });
-        }
-
-        return res.json({
-            message: "Login successful",
-            user: {
-                id: user.id,
-                name: user.name,
-                surname: user.surname,
-                email: user.email
-            }
-        });
-
-    })(req, res, next);
+const user=await prisma.user.findFirst({
+    where:{
+        email:email
+    }
+})
+ if(!user){
+    res.json({
+        error:"Incorrect email"
+    })
+    return
+ }
+ const match=await bcryptjs.compare(password,user.password)
+ if(!match){
+       res.json({
+        error:"Incorrect Password"
+    })
+    return
+ }
+ jsonwebtoken.sing({user:user},"secretKey",(error,token)=>{
+res.send({
+    token
+})
+ })
 
 });
 
