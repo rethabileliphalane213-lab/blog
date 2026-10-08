@@ -12,9 +12,22 @@ signinRouter.post("/users", async (req, res) => {
     try {
         const {name, surname, email, password} = req.body;
 
+          const user = await prisma.user.findFirst({
+            where: {
+                email: email
+            }
+        });
+
+        if(user){
+            res.json({
+                error:"Email alrady in use"
+            })
+            return
+        }
+
         const hashPassword = await bcrypt.hash(password, 10);
 
-        const user = await prisma.user.create({
+         await prisma.user.create({
             data:{
                 name,
                 surname,
