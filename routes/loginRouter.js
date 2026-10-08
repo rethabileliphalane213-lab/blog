@@ -13,8 +13,6 @@ loginRouter.post("/users", async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
-        console.log("Login email:", email);
-
         const user = await prisma.user.findFirst({
             where: {
                 email: email
@@ -39,7 +37,7 @@ loginRouter.post("/users", async (req, res, next) => {
 
         jsonwebtoken.sign(
             { user: user },
-            "secretKey",
+            process.env.SECRET_KEY,
             (error, token) => {
                 if (error) {
                     return next(error);
@@ -56,6 +54,8 @@ loginRouter.post("/users", async (req, res, next) => {
         next(error);
     }
 });
+
+
 
 export default loginRouter;
 
