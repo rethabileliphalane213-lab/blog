@@ -20,3 +20,5 @@ jwt.verify(req.body.token,Process.env.SECRET_KEY,(err,authData)=>{
 })
 })
  
+
+export default postsRouter
