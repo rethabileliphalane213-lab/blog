@@ -1,33 +1,18 @@
-import "dotenv/config";
-import pg from "pg";
-
-const { Client } = pg;
-
-const client = new Client({
-    connectionString: process.env.DATABASE_URL,
-    family: 4
-});
+import prisma from "./db.js";
 
 async function testDatabase() {
     try {
-        console.log("Connecting to PostgreSQL...");
+        const users = await prisma.user.findMany();
 
-        await client.connect();
-
-        console.log("Connected!");
-
-        const result = await client.query(
-            'SELECT * FROM "User" WHERE email = $1',
-            ["rethabileliphalane213@gmail.com"]
-        );
-
-        console.log("RESULT:", result.rows);
+        console.log("DATABASE CONNECTION WORKS");
+        console.log(users);
 
     } catch (error) {
-        console.log("POSTGRES ERROR:", error);
+        console.error("DATABASE ERROR:");
+        console.error(error);
 
     } finally {
-        await client.end();
+        await prisma.$disconnect();
     }
 }
 
