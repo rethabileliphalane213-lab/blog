@@ -27,26 +27,26 @@ signinRouter.post("/users", async (req, res) => {
 
         const hashPassword = await bcrypt.hash(password, 10);
 
-         await prisma.user.create({
-            data:{
-                name,
-                surname,
-                email,
-                password: hashPassword
-            }
-        });
+       const newUser = await prisma.user.create({
+    data: {
+        name,
+        surname,
+        email,
+        password: hashPassword
+    }
+});
 
-        console.log(user);
+console.log(newUser);
 
-        res.json({
-            message:"user received",
-            user:{
-                id:user.id,
-                name:user.name,
-                surname:user.surname,
-                email:user.email
-            }
-        });
+res.json({
+    succes: "Account Created",
+    user: {
+        id: newUser.id,
+        name: newUser.name,
+        surname: newUser.surname,
+        email: newUser.email
+    }
+});
 
     }catch(error) {
     console.log(error);
