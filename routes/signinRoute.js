@@ -1,5 +1,7 @@
 
 import {Router} from "express"
+import jsonwebtoken from "jsonwebtoken"
+
 
 import bcrypt from "bcryptjs"
 
@@ -38,14 +40,29 @@ signinRouter.post("/users", async (req, res) => {
 
 console.log(newUser);
 
-res.json({
-    succes: "Account Created",
-    user: {
-        id: newUser.id,
-        name: newUser.name,
-        surname: newUser.surname,
-        email: newUser.email
-    }
+
+        jsonwebtoken.sign(
+            { user: user },
+            process.env.SECRET_KEY,
+            (error, token) => {
+                if (error) {
+                    return next(error);
+                }
+
+                res.json({
+                   succes: "Account Created",
+                    token: token,
+                     user: {
+                         name: newUser.name,
+                          surname: newUser.surname,
+                        }
+                });
+            }
+        );
+
+
+
+
 });
 
     }catch(error) {
