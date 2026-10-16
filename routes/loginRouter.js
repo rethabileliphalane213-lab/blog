@@ -74,31 +74,63 @@ loginRouter.post("/users", async (req, res, next) => {
     }
 });
 
-loginRouter.post("/recovery",async(req,res)=>{
-const otp=otpPin
-console.log(otp)
-cost [email]=req.body
 
+loginRouter.post("/recovery", async (req, res) => {
+    const { email } = req.body;
 
-try {
-  const info = await transporter.sendMail({
-    from:  process.env.GOOGLE_APP, // sender address
-    to: email, // list of recipients
-    subject: 'Recovery Pin', // subject line
-    text: `Your OTP has been Sent Dont share it wih anyone`, // plain text body
-    html: <h1>{otp}</h1>
-  });
-res.json({
-    succes:"OTP Sent",
-    otp:otp
-})
-  console.log("Message sent: %s", info.messageId);
-  // Preview URL is only available when using an Ethereal test account
-  console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-} catch (err) {
-  console.error("Error while sending mail:", err);
-}
-})
+    if (!email || !email.trim()) {
+        return res.status(400).json({
+            error: "Please enter your email address"
+        });
+    }
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: {
+                email: email.trim()
+            }
+        });
+
+     
+        if (!user) {
+            return res.json({
+                succes: "If an account exists, a recovery OTP will be sent."
+            });
+        }
+
+        const otp = otpPin();
+
+        const info = await transporter.sendMail({
+            from: process.env.GOOGLE_APP,
+            to: email.trim(),
+            subject: "Password Recovery OTP",
+            text: `Your password recovery OTP is ${otp}. It expires in 5 minutes. Do not share this code with anyone.`,
+            html: `
+                <div style="font-family: Arial, sans-serif;">
+                    <h2>Password Recovery</h2>
+                    <p>Your one-time PIN is:</p>
+                    <h1 style="letter-spacing: 5px;">${otp}</h1>
+                    <p>This code expires in 5 minutes.</p>
+                    <p>Do not share this code with anyone.</p>
+                </div>
+            `
+        });
+
+        console.log("Recovery email sent:", info.messageId);
+
+        return res.json({
+            succes: "If an account exists, a recovery OTP will be sent."
+        });
+
+    } catch (error) {
+        console.error("RECOVERY EMAIL ERROR:", error);
+
+        return res.status(500).json({
+            error: "Unable to send the recovery email. Please try again."
+        });
+    }
+});
+
 
 
 export default loginRouter;
