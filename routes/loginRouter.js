@@ -74,15 +74,11 @@ loginRouter.post("/users", async (req, res, next) => {
     }
 });
 
-
+let globalOtp
 loginRouter.post("/recovery", async (req, res) => {
     const { email } = req.body;
 
-    if (!email || !email.trim()) {
-        return res.status(400).json({
-            error: "Please enter your email address"
-        });
-    }
+    
 
     try {
         const user = await prisma.user.findUnique({
@@ -99,6 +95,8 @@ loginRouter.post("/recovery", async (req, res) => {
         }
 
         const otp = otpPin();
+        globalOtp=otp
+        console.log(otp)
 
         const info = await transporter.sendMail({
             from: process.env.GOOGLE_APP,
@@ -130,6 +128,20 @@ loginRouter.post("/recovery", async (req, res) => {
         });
     }
 });
+
+loginRouter.post("/confirm",(req,res)=>{
+const [pin]=req.body
+if(pin !==globalOtp){
+    res.json({
+        error:"Incorrect PIN!"
+    })
+    return
+}
+return res.json({
+    success:"Your Password has Been Reset.Enter new Pin"
+})
+
+})
 
 
 
