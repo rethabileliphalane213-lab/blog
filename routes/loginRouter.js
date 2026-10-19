@@ -4,6 +4,8 @@ import prisma from "./db.js"
 import bcryptjs from  "bcryptjs"
 import jsonwebtoken from "jsonwebtoken"
 import nodemailer from "nodemailer"
+import bcrypt from "bcryptjs"
+
 
 
 
@@ -147,17 +149,20 @@ loginRouter.post("/password_reset",async(req,res)=>{
     const {newPassword,email}=req.body
      
      try{
+        const hashPassword = await bcrypt.hash(newPassword, 10);
+        
         await prisma.user.update({
         where:{
             email:email
         },
         data:{
-            password:newPassword
+            password:hashPassword
         }
      })
      res.json({
-        success:"Password Changed"
+        succes:"Password Changed"
      })
+     console.log("Password updated successfully for user:", email);
      return
 
      }catch(e){
