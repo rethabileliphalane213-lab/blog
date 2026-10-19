@@ -129,20 +129,44 @@ loginRouter.post("/recovery", async (req, res) => {
     }
 });
 
-loginRouter.post("/confirm",(req,res)=>{
-const [pin]=req.body
-if(pin !==globalOtp){
+loginRouter.post("/pin_confirm",(req,res)=>{
+const {pin}=req.body
+if(Number(pin) !==Number(globalOtp)){
     res.json({
         error:"Incorrect PIN!"
     })
     return
 }
 return res.json({
-    success:"Your Password has Been Reset.Enter new Pin"
+    succes:"Your Password has Been Reset.Enter new Password"
 })
 
 })
 
+loginRouter.post("/password_reset",async(req,res)=>{
+    const {newPassword,email}=req.body
+     
+     try{
+        await prisma.user.update({
+        where:{
+            email:email
+        },
+        data:{
+            password:newPassword
+        }
+     })
+     res.json({
+        success:"Password Changed"
+     })
+     return
+
+     }catch(e){
+        console.log(e)
+        res.json({
+            error:`Failed to update Password`
+        })
+     }
+})
 
 
 export default loginRouter;
