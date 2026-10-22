@@ -1,6 +1,6 @@
 import {Router} from "express"
 import multer from "multer"
-import uploadRouter from "../../file-uploader/routes/uploadRouter"
+
 const postRouter=Router()
 
 
@@ -14,7 +14,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage })
 
 postRouter.post("/", upload.single("file"), async (req, res) => {
-
+res.json({
+    succes:"We recievd your request and we'll get back to you shortly"
+})
 })
 
-export default uploadRouter
+export default postRouter
