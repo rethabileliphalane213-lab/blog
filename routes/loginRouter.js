@@ -98,13 +98,13 @@ loginRouter.post("/recovery", async (req, res) => {
 
         const otp = otpPin();
         globalOtp=otp
-        console.log(otp)
+        console.log("your OTP is:",otp)
 
         const info = await transporter.sendMail({
             from: process.env.GOOGLE_APP,
             to: email.trim(),
             subject: "Password Recovery OTP",
-            text: `Your password recovery OTP is ${otp}. It expires in 5 minutes. Do not share this code with anyone.`,
+            text: `Your password recovery OTP is ${otp}. `,
             html: `
                 <div style="font-family: Arial, sans-serif;">
                     <h2>Password Recovery</h2>

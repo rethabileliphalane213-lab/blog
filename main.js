@@ -16,6 +16,7 @@ app.use(cors);
 import signinRouter from "./routes/signinRoute.js";
 import loginRouter from "./routes/loginRouter.js";
 import postsRouter from "./routes/postsRouter.js"
+import uploadRouter from "./routes/blogPostRuter.js";
 import prisma from "./routes/db.js";
 
 
@@ -26,7 +27,7 @@ app.get("/", (req, res) => {
 
 app.use("/signin", signinRouter);
 app.use("/login", loginRouter);
-app.use("/post",postsRouter)
+app.use("/post",uploadRouter)
 
 const port = process.env.PORT || 4000;
 
