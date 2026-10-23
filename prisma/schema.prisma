@@ -13,7 +13,6 @@ model User {
   email     String  @unique @db.VarChar(255)
   password  String  @db.VarChar(255)
 
-  posts     Posts[]
 }
 
 model Posts {
@@ -22,7 +21,6 @@ model Posts {
   content   String   @db.Text
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  imagePath String   @db.Text
 
-  authorId  Int
-  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
 }

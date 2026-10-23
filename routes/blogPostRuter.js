@@ -1,6 +1,8 @@
 import {Router} from "express"
 import multer from "multer"
 import verifyToken from "./verifyToken.js"
+import prisma from "./db.js"
+
 const postRouter=Router()
 
 
@@ -14,9 +16,45 @@ const storage = multer.diskStorage({
 const upload = multer({ storage })
 
 postRouter.post("/",verifyToken,upload.single("file"), async (req, res) => {
-res.json({
-    succes:"We recievd your request and we'll get back to you shortly"
+try{
+const {title,post}=req.body
+const file=req.file
+if(!title||!post||!file){
+    return res.json({
+        error:"Could not retrieve you posts are you sure you sent Everything right"
+    })
+
+}
+  await prisma.posts.create({
+        data:{
+            title:title,
+           content :post,
+            imagePath:`uploads/${file.filename}`
+        }
+    })
+    res.json({
+        succes:"Post added!"
+    })
+    return
+}catch(e){
+    console.log(`Fix here: ${e}`)
+return res.json({
+    error:"Internal error! Failed to save post"
 })
+}
 })
 
+postRouter.get("/",verifyToken,async(req,res)=>{
+    try{
+        const data=await prisma.posts.findMany({
+            orderBy:{
+                id: "desc"
+            }
+        })
+        res.json({
+             succes:"Welcome To My Full Stack Journal",
+            data:data
+        })
+    }
+})
 export default postRouter
