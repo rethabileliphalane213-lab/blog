@@ -69,16 +69,17 @@ return res.json({
 
 
 postRouter.delete("/delete/:id",verifyToken,async(req,res)=>{
-    const id=req.body
+   const {id}=req.params
     try{
         await prisma.posts.delete({
             where:{
-                id:id 
+                id:Number(id)
             }
         })
         res.json({
             succes:"Post Deleted"
         })
+        return
     }catch(e){
         console.log("error while deleting post. check",e)
         res.json({
