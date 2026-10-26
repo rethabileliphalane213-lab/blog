@@ -20,7 +20,7 @@ import uploadRouter from "./routes/blogPostRuter.js";
 import prisma from "./routes/db.js";
 
 
-
+app.use("/uploads",express.static("uploads"))
 app.get("/", (req, res) => {
     res.send("Hello world");
 });
@@ -28,6 +28,7 @@ app.get("/", (req, res) => {
 app.use("/signin", signinRouter);
 app.use("/login", loginRouter);
 app.use("/post",uploadRouter)
+
 
 const port = process.env.PORT || 4000;
 

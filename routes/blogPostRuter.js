@@ -25,16 +25,17 @@ if(!title||!post||!file){
     })
 
 }
-  await prisma.posts.create({
+  const addPost=await prisma.posts.create({
         data:{
             title:title,
            content :post,
-            imagePath:`uploads/${file.filename}`
+            imagePath:`/uploads/${file.filename}`
         }
     })
     res.json({
         succes:"Post added!"
     })
+    console.log(addPost.imagePath)
     return
 }catch(e){
     console.log(`Fix here: ${e}`)
@@ -51,10 +52,39 @@ postRouter.get("/",verifyToken,async(req,res)=>{
                 id: "desc"
             }
         })
-        res.json({
+         res.json({
              succes:"Welcome To My Full Stack Journal",
-            data:data
+            posts:data
+        })
+        return
+       
+    }catch(e){
+           console.log(`Fix here: ${e}`)
+return res.json({
+    error:"Internal error! Failed to fetch post"
+})
+
+    }
+})
+
+
+postRouter.delete("/delete/:id",verifyToken,async(req,res)=>{
+    const id=req.body
+    try{
+        await prisma.posts.delete({
+            where:{
+                id:id 
+            }
+        })
+        res.json({
+            succes:"Post Deleted"
+        })
+    }catch(e){
+        console.log("error while deleting post. check",e)
+        res.json({
+            error:"Internal error.Failed to Delete post"
         })
     }
 })
+
 export default postRouter
