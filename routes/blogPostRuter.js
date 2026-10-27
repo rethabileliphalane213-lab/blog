@@ -90,7 +90,7 @@ postRouter.delete("/delete/:id",verifyToken,async(req,res)=>{
 
 
 
-postRouter.put( "/post/update/:id",verifyToken,upload.single("file"),async (req, res) => {
+postRouter.put( "/update/:id",verifyToken,upload.single("file"),async (req, res) => {
         try {
             const id = Number(req.params.id);
             const { title, post } = req.body;
