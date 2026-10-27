@@ -88,4 +88,54 @@ postRouter.delete("/delete/:id",verifyToken,async(req,res)=>{
     }
 })
 
+
+
+postRouter.put( "/post/update/:id",verifyToken,upload.single("file"),async (req, res) => {
+        try {
+            const id = Number(req.params.id);
+            const { title, post } = req.body;
+
+           
+            if (!title?.trim() || !post?.trim()) {
+                return res.status(400).json({
+                    error: "Title and content are required"
+                });
+            }
+
+            const existingPost = await prisma.posts.findUnique({
+                where: { id }
+            });
+
+            if (!existingPost) {
+                return res.status(404).json({
+                    error: "Post not found"
+                });
+            }
+
+            const updatedPost = await prisma.posts.update({
+                where: { id },
+                data: {
+                    title: title,
+                    content: post,
+                    ...(req.file && {
+                        imagePath: `/uploads/${req.file.filename}`
+                    })
+                }
+            });
+
+            return res.status(200).json({
+                succes: "Post updated successfully",
+                post: updatedPost
+            });
+
+        } catch (error) {
+            console.error(error);
+
+            return res.status(500).json({
+                error: "Failed to update post"
+            });
+        }
+    }
+);
+
 export default postRouter
