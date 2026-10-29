@@ -115,7 +115,11 @@ loginRouter.post("/recovery", async (req, res) => {
                 </div>
             `
         });
-
+const timer=setTimeout(()=>{
+    if(Number(globalOtp)===Number(otp))
+    globalOtp=null
+    console.log("password Expired")
+},(1000*60)*5)
         console.log("Recovery email sent:", info.messageId);
 
         return res.json({
