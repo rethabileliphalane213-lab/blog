@@ -2,18 +2,28 @@ import {Router} from "express"
 import multer from "multer"
 import verifyToken from "./verifyToken.js"
 import prisma from "./db.js"
+import supabase from "./superbase-image.js"
+import { randomUUID } from "crypto";
+import path from "path"
 
 const postRouter=Router()
 
 
-const storage = multer.diskStorage({
-    destination: "upload",
-    filename: (req, file, cb) => {
-        cb(null, file.originalname)
-    }
-})
+const storage = multer.memoryStorage()
 
-const upload = multer({ storage })
+const upload =  multer({
+    storage,
+    limits: {
+        fileSize: 5 * 1024 * 1024
+    },
+    fileFilter: (req, file, cb) => {
+        if (!file.mimetype.startsWith("image/")) {
+            return cb(new Error("Only images are allowed"));
+        }
+
+        cb(null, true);
+    }
+});
 
 postRouter.post("/",verifyToken,upload.single("file"), async (req, res) => {
 try{
@@ -25,11 +35,28 @@ if(!title||!post||!file){
     })
 
 }
+const fileName = `${randomUUID()}${path.extname(file.originalname)}`;
+
+const { data, error } = await supabase.storage
+            .from("post-images")
+            .upload(fileName, file.buffer, {
+                contentType: file.mimetype,
+                upsert: false
+            });
+
+        if (error) {
+            throw error;
+        }
+
+        const { data: publicUrlData } = supabase.storage
+        .from("post-images")
+        .getPublicUrl(data.path);
+
   const addPost=await prisma.posts.create({
         data:{
             title:title,
            content :post,
-            imagePath:`/uploads/${file.filename}`
+           imagePath: publicUrlData.publicUrl
         }
     })
     res.json({
