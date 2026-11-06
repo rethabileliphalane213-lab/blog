@@ -3,7 +3,7 @@ import "dotenv/config";
 
 
 const corsOptions={
-    origin:process.env.FRONTEND_URL,
+    origin: FRONTEND_URL ,
     optionsSuccessStatus:200
 }
 

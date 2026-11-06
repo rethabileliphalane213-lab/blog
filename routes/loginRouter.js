@@ -20,7 +20,7 @@ const transporter = nodemailer.createTransport({
   port: 587,
   secure: false, // use STARTTLS (upgrade connection to TLS after connecting)
   auth: {
-    user: process.env.GOOGLE_APP,
+    user: "rethabileliphalane213@gmail.com",
     pass: process.env.GOOGLE_PASS,
   },
 });
