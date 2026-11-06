@@ -101,7 +101,7 @@ loginRouter.post("/recovery", async (req, res) => {
         console.log("your OTP is:",otp)
 
         const info = await transporter.sendMail({
-            from: process.env.GOOGLE_APP,
+            from: "rethabileliphalane@gmail.com",
             to: email.trim(),
             subject: "Password Recovery OTP",
             text: `Your password recovery OTP is ${otp}. `,
@@ -115,11 +115,13 @@ loginRouter.post("/recovery", async (req, res) => {
                 </div>
             `
         });
+        /*
 const timer=setTimeout(()=>{
     if(Number(globalOtp)===Number(otp))
     globalOtp=null
     console.log("password Expired")
 },(1000*60)*5)
+*/
         console.log("Recovery email sent:", info.messageId);
 
         return res.json({
