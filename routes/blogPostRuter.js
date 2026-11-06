@@ -67,7 +67,8 @@ const { data, error } = await supabase.storage
 }catch(e){
     console.log(`Fix here: ${e}`)
 return res.json({
-    error:"Internal error! Failed to save post"
+    error:"Internal error! Failed to save post",
+    hint:e 
 })
 }
 })
