@@ -85,62 +85,64 @@ loginRouter.post("/users", async (req, res, next) => {
 });
 
 let globalOtp
+
 loginRouter.post("/recovery", async (req, res) => {
+    console.log("1. RECOVERY ROUTE CALLED");
+
     const { email } = req.body;
 
-    
-
     try {
+        console.log("2. Checking user:", email);
+
         const user = await prisma.user.findUnique({
             where: {
                 email: email.trim()
             }
         });
 
-     
+        console.log("3. User found:", !!user);
+
         if (!user) {
             return res.json({
-                succes: "If an account exists, a recovery OTP will be sent."
+                success: "If an account exists, a recovery OTP will be sent."
             });
         }
 
         const otp = otpPin();
-        globalOtp=otp
-        console.log("your OTP is:",otp)
+
+        console.log("4. OTP generated");
+
+        globalOtp = otp;
+
+        console.log("5. Starting email send...");
 
         const info = await transporter.sendMail({
-            from: "rethabileliphalane@gmail.com",
+            from: "rethabileliphalane213@gmail.com",
             to: email.trim(),
             subject: "Password Recovery OTP",
-            text: `Your password recovery OTP is ${otp}. `,
+            text: `Your password recovery OTP is ${otp}.`,
             html: `
-                <div style="font-family: Arial, sans-serif;">
-                    <h2>Password Recovery</h2>
-                    <p>Your one-time PIN is:</p>
-                    <h1 style="letter-spacing: 5px;">${otp}</h1>
-                    <p>This code expires in 5 minutes.</p>
-                    <p>Do not share this code with anyone.</p>
-                </div>
+                <h2>Password Recovery</h2>
+                <p>Your one-time PIN is:</p>
+                <h1>${otp}</h1>
+                <p>This code expires in 5 minutes.</p>
             `
         });
-        /*
-const timer=setTimeout(()=>{
-    if(Number(globalOtp)===Number(otp))
-    globalOtp=null
-    console.log("password Expired")
-},(1000*60)*5)
-*/
-        console.log("Recovery email sent:", info.messageId);
+
+        console.log("6. EMAIL SENT:", info.messageId);
+        console.log("7. SMTP RESPONSE:", info.response);
 
         return res.json({
-            succes: "If an account exists, a recovery OTP will be sent."
+            success: "If an account exists, a recovery OTP will be sent."
         });
 
     } catch (error) {
         console.error("RECOVERY EMAIL ERROR:", error);
+        console.error("ERROR CODE:", error.code);
+        console.error("ERROR RESPONSE:", error.response);
 
         return res.status(500).json({
-            error: "Unable to send the recovery email. Please try again."
+            error: "Unable to send recovery email."
         });
     }
 });
