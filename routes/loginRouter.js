@@ -25,6 +25,8 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+console.log("GOOGLE_PASS exists:", !!process.env.GOOGLE_PASS);
+
 
 
 
