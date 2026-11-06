@@ -16,24 +16,31 @@ import verifyToken from "./verifyToken.js"
 
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false, // use STARTTLS (upgrade connection to TLS after connecting)
-  auth: {
-    user: "rethabileliphalane213@gmail.com",
-    pass: process.env.GOOGLE_PASS,
-  },
-});
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
 
+    connectionTimeout: 15000,
+    greetingTimeout: 15000,
+    socketTimeout: 20000,
+
+    auth: {
+        user: "rethabileliphalane213@gmail.com",
+        pass: process.env.GOOGLE_PASS,
+    },
+});
 console.log("GOOGLE_PASS exists:", !!process.env.GOOGLE_PASS);
 
-transporter.verify((error, success) => {
-    if (error) {
-        console.error("SMTP VERIFY ERROR:", error);
-    } else {
-        console.log("SMTP SERVER READY:", success);
-    }
-});
+transporter.verify()
+    .then(() => {
+        console.log("SMTP CONNECTION SUCCESSFUL");
+    })
+    .catch(error => {
+        console.error("SMTP CONNECTION FAILED");
+        console.error("Code:", error.code);
+        console.error("Command:", error.command);
+        console.error("Message:", error.message);
+    });
 
 
 
