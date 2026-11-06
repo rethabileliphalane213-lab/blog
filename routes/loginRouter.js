@@ -27,7 +27,13 @@ const transporter = nodemailer.createTransport({
 
 console.log("GOOGLE_PASS exists:", !!process.env.GOOGLE_PASS);
 
-
+transporter.verify((error, success) => {
+    if (error) {
+        console.error("SMTP VERIFY ERROR:", error);
+    } else {
+        console.log("SMTP SERVER READY:", success);
+    }
+});
 
 
 
