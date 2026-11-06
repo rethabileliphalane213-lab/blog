@@ -5,6 +5,7 @@ import prisma from "./db.js"
 import supabase from "./superbase-image.js"
 import { randomUUID } from "crypto";
 import path from "path"
+import "dotenv/config";
 
 const postRouter=Router()
 
