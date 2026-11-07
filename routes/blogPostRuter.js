@@ -36,6 +36,7 @@ if(!title||!post||!file){
     })
 
 }
+
 const fileName = `${randomUUID()}${path.extname(file.originalname)}`;
 
 const { data, error } = await supabase.storage
@@ -118,13 +119,16 @@ postRouter.delete("/delete/:id",verifyToken,async(req,res)=>{
 })
 
 
-
-postRouter.put( "/update/:id",verifyToken,upload.single("file"),async (req, res) => {
+postRouter.put(
+    "/update/:id",
+    verifyToken,
+    upload.single("file"),
+    async (req, res) => {
         try {
             const id = Number(req.params.id);
             const { title, post } = req.body;
+            const file = req.file;
 
-           
             if (!title?.trim() || !post?.trim()) {
                 return res.status(400).json({
                     error: "Title and content are required"
@@ -141,14 +145,36 @@ postRouter.put( "/update/:id",verifyToken,upload.single("file"),async (req, res)
                 });
             }
 
+            let imagePath = existingPost.imagePath;
+
+           
+            if (file) {
+                const fileName = `${randomUUID()}${path.extname(file.originalname)}`;
+
+                const { data, error } = await supabase.storage
+                    .from("post-images")
+                    .upload(fileName, file.buffer, {
+                        contentType: file.mimetype,
+                        upsert: false
+                    });
+
+                if (error) {
+                    throw error;
+                }
+
+                const { data: publicUrlData } = supabase.storage
+                    .from("post-images")
+                    .getPublicUrl(data.path);
+
+                imagePath = publicUrlData.publicUrl;
+            }
+
             const updatedPost = await prisma.posts.update({
                 where: { id },
                 data: {
                     title: title,
                     content: post,
-                    ...(req.file && {
-                        imagePath: `/uploads/${req.file.filename}`
-                    })
+                    imagePath: imagePath
                 }
             });
 
@@ -166,5 +192,4 @@ postRouter.put( "/update/:id",verifyToken,upload.single("file"),async (req, res)
         }
     }
 );
-
 export default postRouter

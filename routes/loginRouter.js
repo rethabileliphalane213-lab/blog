@@ -135,6 +135,15 @@ loginRouter.post("/recovery", async (req, res) => {
                 <p>This code expires in 5 minutes.</p>
             `
         });
+        
+        /*
+const timer=setTimeout(()=>{
+    if(Number(globalOtp)===Number(otp))
+    globalOtp=null
+    console.log("password Expired")
+},(1000*60)*5)
+*/
+ 
 
         console.log("6. EMAIL SENT:", info.messageId);
         console.log("7. SMTP RESPONSE:", info.response);
