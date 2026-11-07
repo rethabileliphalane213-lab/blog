@@ -22,7 +22,7 @@ import prisma from "./routes/db.js";
 
 app.use("/uploads",express.static("uploads"))
 app.get("/", (req, res) => {
-    res.send("Hello world");
+    res.sendFile(path.join(__dirname, "views", "home.html"));
 });
 
 app.use("/signin", signinRouter);
