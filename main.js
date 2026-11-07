@@ -28,7 +28,7 @@ import prisma from "./routes/db.js";
 
 app.use("/uploads",express.static("uploads"))
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "views", "home.html"));
+    res.sendFile(path.join(__dirname,  "home.html"));
 });
 
 app.use("/signin", signinRouter);
