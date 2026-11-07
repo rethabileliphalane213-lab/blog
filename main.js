@@ -9,12 +9,13 @@ import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-app.use(express.static(path.join(__dirname, "public")));
-
 
 const app = express();
 
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
+
+
 
 import cors from "./routes/cors.js";
 app.use(cors);
