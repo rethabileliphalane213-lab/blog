@@ -80,3 +80,12 @@ span{
   transition: all 0.3s ease;
   border: 2px solid transparent;
 }
+
+
+.notice {
+  padding: 30px;
+  border: 2px solid var(--main-color);
+  border-radius: 20px;
+  background: var(--glass);
+  box-shadow: 0 0 30px rgba(255, 45, 85, 0.3);
+}
