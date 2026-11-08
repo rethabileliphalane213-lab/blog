@@ -89,3 +89,16 @@ span{
   background: var(--glass);
   box-shadow: 0 0 30px rgba(255, 45, 85, 0.3);
 }
+
+.go-to-site a {
+  display: inline-block;
+  padding: 12px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  background: var(--main-color);
+  color: white;
+}
+
+.go-to-site a:hover {
+  opacity: 0.85;
+}
