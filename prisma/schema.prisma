@@ -12,7 +12,7 @@ model User {
   surname   String  @db.VarChar(255)
   email     String  @unique @db.VarChar(255)
   password  String  @db.VarChar(255)
-
+    role     String @default("user")
 }
 
 model Posts {
