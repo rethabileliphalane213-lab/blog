@@ -1,22 +1,21 @@
 function authoriseReq(role){
-    return (req,res,next){
-        if(!role){
-            res.json({
-                error:"Acces Denied"
-            })
-            return
+    return (req,res,next) => {
+
+        if(!req.user){
+            return res.status(401).json({
+                error:"Access Denied"
+            });
         }
-        if(role==="Admin"){
-            nex()
+
+        if(req.user.role === role){
+            next();
         }
         else{
-             res.json({
-                error:"SORRY! Only Adimin can perfom such Task"
-            })
-            return
-
+            return res.status(403).json({
+                error:"SORRY! Only Admin can perform such Task"
+            });
         }
     }
 }
 
-export default authoriseReq
+export default authoriseReq;

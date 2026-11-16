@@ -35,7 +35,7 @@ signinRouter.post("/users", async (req, res) => {
         surname,
         email,
         password: hashPassword,
-        role:"admin"
+        role:"Admin"
     }
 });
 
@@ -104,7 +104,7 @@ signinRouter.post("/not_admin", async (req, res) => {
         surname,
         email,
         password: hashPassword,
-        role:"user"
+        role:"User"
     }
 });
 
