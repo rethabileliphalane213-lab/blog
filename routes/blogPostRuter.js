@@ -6,6 +6,7 @@ import supabase from "./superbase-image.js"
 import { randomUUID } from "crypto";
 import path from "path"
 import "dotenv/config";
+import authoriseReq from "./functions/authorize.js"
 
 const postRouter=Router()
 
@@ -26,7 +27,7 @@ const upload =  multer({
     }
 });
 
-postRouter.post("/",verifyToken,upload.single("file"), async (req, res) => {
+postRouter.post("/",verifyToken,authoriseReq("Admin"),upload.single("file"), async (req, res) => {
 try{
 const {title,post}=req.body
 const file=req.file
@@ -98,7 +99,7 @@ return res.json({
 })
 
 
-postRouter.delete("/delete/:id",verifyToken,async(req,res)=>{
+postRouter.delete("/delete/:id",verifyToken,authoriseReq("Admin"),async(req,res)=>{
    const {id}=req.params
     try{
         await prisma.posts.delete({
@@ -119,11 +120,7 @@ postRouter.delete("/delete/:id",verifyToken,async(req,res)=>{
 })
 
 
-postRouter.put(
-    "/update/:id",
-    verifyToken,
-    upload.single("file"),
-    async (req, res) => {
+postRouter.put("/update/:id",verifyToken,authoriseReq("Admin"),upload.single("file"),async (req, res) => {
         try {
             const id = Number(req.params.id);
             const { title, post } = req.body;
