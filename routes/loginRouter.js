@@ -48,9 +48,11 @@ transporter.verify()
 
 const loginRouter = Router();
 
+
 loginRouter.post("/users", async (req, res, next) => {
     try {
         const { email, password } = req.body;
+
         const user = await prisma.user.findFirst({
             where: {
                 email: email
@@ -58,29 +60,40 @@ loginRouter.post("/users", async (req, res, next) => {
         });
 
         if (!user) {
-            return res.json({
-                error: "Incorrect email"
+            return res.status(401).json({
+                error: "Incorrect email or password"
             });
         }
+
         const match = await bcryptjs.compare(password, user.password);
 
         if (!match) {
-            return res.json({
-                error: "Incorrect Password"
+            return res.status(401).json({
+                error: "Incorrect email or password"
             });
         }
 
         jsonwebtoken.sign(
-            { user: user },
+            {
+                id: user.id,
+                role: user.role
+            },
             process.env.SECRET_KEY,
+            {
+                expiresIn: "1h"
+            },
             (error, token) => {
                 if (error) {
                     return next(error);
                 }
 
                 res.json({
-                    succes:"You are logeed in",
-                    token: token
+                    success: "You are Logged in!",
+                    token,
+                    user: {
+                        name: user.name,
+                        surname: user.surname
+                    }
                 });
             }
         );
@@ -90,6 +103,7 @@ loginRouter.post("/users", async (req, res, next) => {
         next(error);
     }
 });
+
 
 let globalOtp
 
