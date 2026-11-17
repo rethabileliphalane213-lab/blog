@@ -209,7 +209,7 @@ postRouter.post("/comments",verifyToken,async(req,res)=>{
             });
     }
     try{
-        const newComment=await prisma.posts.create({
+        const newComment=await prisma.comment.create({
         data:{
             comment:comment,
            userId :id,
