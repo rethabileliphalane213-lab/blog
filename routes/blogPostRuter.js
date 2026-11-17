@@ -189,4 +189,44 @@ postRouter.put("/update/:id",verifyToken,authoriseReq("Admin"),upload.single("fi
         }
     }
 );
+
+postRouter.post("/comments",verifyToken,async(req,res)=>{
+    const{comment,postId}=req.body
+    const id=req.user.id
+    if(!comment){
+         return res.json({
+                error: "Enter Comment"
+            });
+    }
+    if(!postId){
+        return res.json({
+                error: "Inernal Error Post ID not found"
+            });
+    }
+    if(!id){
+         return res.json({
+                error: "Unauthorized User!"
+            });
+    }
+    try{
+        const newComment=await prisma.posts.create({
+        data:{
+            comment:comment,
+           userId :id,
+           postId: postId
+        }
+    })
+      res.json({
+        succes:"Comment added!"
+    })
+    return
+    }catch(e){
+        console.log("error while adding comment check...",e)
+        return res.json({
+                error: "Inernal Error Failed to add Comment"
+            });
+
+    }
+})
+
 export default postRouter
