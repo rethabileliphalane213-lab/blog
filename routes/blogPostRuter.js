@@ -248,10 +248,10 @@ postRouter.get("/comments/:id",verifyToken,async(req,res)=>{
    try{
         const data=await prisma.comment.findMany({
             where:{
-                commentId:Number(id)
+                postId:Number(id)
             },
             orderBy:{
-                id: "desc"
+                commentId: "desc"
             }
         })
          res.json({
