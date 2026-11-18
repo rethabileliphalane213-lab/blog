@@ -209,22 +209,58 @@ postRouter.post("/comments",verifyToken,async(req,res)=>{
             });
     }
     try{
+        const user = await prisma.user.findFirst({
+            where: {
+                id: id
+            }
+        });
+        if(!user){
+             return res.json({
+                error: "Unauthorized User!"
+            });
+        }
+        else{
         const newComment=await prisma.comment.create({
         data:{
             comment:comment,
            userId :id,
-           postId: postId
+           postId: postId,
+           name:user.name,
+           surname:user.surname
         }
     })
       res.json({
         succes:"Comment added!"
     })
     return
+}
     }catch(e){
         console.log("error while adding comment check...",e)
         return res.json({
                 error: "Inernal Error Failed to add Comment"
             });
+
+    }
+})
+
+postRouter.get("./comments",verifyToken,async(req,res)=>{
+   try{
+        const data=await prisma.comments.findMany({
+            orderBy:{
+                id: "desc"
+            }
+        })
+         res.json({
+             succes:"Comments retrieved",
+            comments:data
+        })
+        return
+       
+    }catch(e){
+           console.log(`error while fetching comments....check: ${e}`)
+return res.json({
+    error:"Internal error! Failed to fetch post"
+})
 
     }
 })
