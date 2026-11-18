@@ -243,9 +243,13 @@ postRouter.post("/comments",verifyToken,async(req,res)=>{
     }
 })
 
-postRouter.get("./comments",verifyToken,async(req,res)=>{
+postRouter.get("/comments/:id",verifyToken,async(req,res)=>{
+    const {id}=req.params
    try{
-        const data=await prisma.comments.findMany({
+        const data=await prisma.comment.findMany({
+            where:{
+                postId:id
+            },
             orderBy:{
                 id: "desc"
             }
